@@ -33,6 +33,8 @@ import {
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { PanelSidebar } from "@/components/PanelSidebar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { legalDocuments } from "@/content/legal-documents";
 
 type ProfileType = "vet" | "clinic";
 type ProfilePanelSection = "info" | "hours" | "documents" | "carousel" | "preview" | "settings";
@@ -1201,11 +1203,13 @@ export default function SoyVeterinarioPage() {
   const [accountCurrentEmail, setAccountCurrentEmail] = useState("");
   const [accountNextEmail, setAccountNextEmail] = useState("");
   const [accountSettingsLoading, setAccountSettingsLoading] = useState(false);
+  const [showTermsDialog, setShowTermsDialog] = useState(false);
 
   const [showVetPassword, setShowVetPassword] = useState(false);
   const [showVetConfirmPassword, setShowVetConfirmPassword] = useState(false);
   const [showClinicPassword, setShowClinicPassword] = useState(false);
   const [showClinicConfirmPassword, setShowClinicConfirmPassword] = useState(false);
+  const termsDocument = legalDocuments.terms;
 
   const [vetForm, setVetForm] = useState({
     firstName: "",
@@ -1526,6 +1530,7 @@ export default function SoyVeterinarioPage() {
     clinicForm.password !== clinicForm.confirmPassword;
   const vetAboutTooLong = vetForm.about.length > ABOUT_MAX_CHARS;
   const clinicAboutTooLong = clinicForm.about.length > ABOUT_MAX_CHARS;
+  const initialTermsAccepted = profileType === "vet" ? vetForm.termsAccepted : clinicForm.termsAccepted;
 
   const toggleVetSpecialty = (value: string) => {
     setVetForm((prev) => ({
@@ -1897,6 +1902,12 @@ export default function SoyVeterinarioPage() {
     setLoading(true);
 
     if (profileType === "vet") {
+      if (!vetForm.termsAccepted) {
+        setError("Debes aceptar los términos y condiciones para enviar la solicitud.");
+        setLoading(false);
+        return;
+      }
+
       if (vetForm.password !== vetForm.confirmPassword) {
         setError("Las contraseñas no coinciden.");
         setLoading(false);
@@ -1950,6 +1961,12 @@ export default function SoyVeterinarioPage() {
         return;
       }
     } else {
+      if (!clinicForm.termsAccepted) {
+        setError("Debes aceptar los términos y condiciones para enviar la solicitud.");
+        setLoading(false);
+        return;
+      }
+
       if (clinicForm.password !== clinicForm.confirmPassword) {
         setError("Las contraseñas no coinciden.");
         setLoading(false);
@@ -2854,6 +2871,28 @@ export default function SoyVeterinarioPage() {
                             Las contraseñas no coinciden.
                           </p>
                         ) : null}
+                        <div className="md:col-span-2 rounded-2xl border border-purple-100 bg-white/70 p-4">
+                          <label className="flex items-start gap-3 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              checked={vetForm.termsAccepted}
+                              onChange={(e) =>
+                                setVetForm({ ...vetForm, termsAccepted: e.target.checked })
+                              }
+                              className="mt-0.5 h-4 w-4 rounded border-purple-300 accent-purple-600"
+                            />
+                            <span>
+                              Acepto los terminos y condiciones.{" "}
+                              <button
+                                type="button"
+                                onClick={() => setShowTermsDialog(true)}
+                                className="font-semibold text-purple-700 underline underline-offset-2 hover:text-purple-800"
+                              >
+                                Ver términos y condiciones
+                              </button>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -2971,6 +3010,28 @@ export default function SoyVeterinarioPage() {
                             Las contraseñas no coinciden.
                           </p>
                         ) : null}
+                        <div className="md:col-span-2 rounded-2xl border border-purple-100 bg-white/70 p-4">
+                          <label className="flex items-start gap-3 text-sm text-gray-700">
+                            <input
+                              type="checkbox"
+                              checked={clinicForm.termsAccepted}
+                              onChange={(e) =>
+                                setClinicForm({ ...clinicForm, termsAccepted: e.target.checked })
+                              }
+                              className="mt-0.5 h-4 w-4 rounded border-purple-300 accent-purple-600"
+                            />
+                            <span>
+                              Acepto los terminos y condiciones.{" "}
+                              <button
+                                type="button"
+                                onClick={() => setShowTermsDialog(true)}
+                                className="font-semibold text-purple-700 underline underline-offset-2 hover:text-purple-800"
+                              >
+                                Ver términos y condiciones
+                              </button>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -4674,7 +4735,8 @@ export default function SoyVeterinarioPage() {
                       vetPasswordsMismatch ||
                       clinicPasswordsMismatch ||
                       vetAboutTooLong ||
-                      clinicAboutTooLong
+                      clinicAboutTooLong ||
+                      (isInitialStep && !initialTermsAccepted)
                     }
                     className="inline-flex items-center gap-3 bg-gradient-to-r from-[#EC4899] to-[#4F46E5] text-white font-semibold py-4 px-8 rounded-2xl shadow-xl shadow-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/40 disabled:opacity-60"
                   >
@@ -4686,6 +4748,38 @@ export default function SoyVeterinarioPage() {
             </form>
           )}
             </motion.div>
+            <Dialog open={showTermsDialog} onOpenChange={setShowTermsDialog}>
+              <DialogContent className="max-w-3xl p-0 overflow-hidden border border-purple-100 bg-white rounded-2xl">
+                <div className="border-b border-purple-100 bg-gradient-to-r from-purple-50 via-pink-50 to-blue-50 px-6 py-5">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="text-xl font-bold text-gray-900">{termsDocument.title}</DialogTitle>
+                    <DialogDescription className="text-sm text-gray-600">
+                      Última actualización: {termsDocument.lastUpdated}
+                    </DialogDescription>
+                  </DialogHeader>
+                </div>
+                <div className="max-h-[70vh] overflow-y-auto px-6 py-5 space-y-5">
+                  <p className="text-sm leading-relaxed text-gray-700">{termsDocument.intro}</p>
+                  {termsDocument.sections.map((section) => (
+                    <section key={section.title} className="space-y-2">
+                      <h4 className="text-sm font-semibold text-gray-900">{section.title}</h4>
+                      {section.paragraphs.map((paragraph) => (
+                        <p key={paragraph} className="text-sm leading-relaxed text-gray-700">
+                          {paragraph}
+                        </p>
+                      ))}
+                      {section.bullets?.length ? (
+                        <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                          {section.bullets.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </section>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
             {showSuccessModal ? (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
                 <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">

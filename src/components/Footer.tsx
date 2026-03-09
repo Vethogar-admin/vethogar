@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type SVGProps } from "react";
 import Link from "next/link";
-import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,14 @@ const legalLinks: Array<{ key: LegalDocumentKey; label: string }> = [
   { key: "privacy", label: "Política de Privacidad" },
   { key: "cookies", label: "Política de Cookies" },
 ];
+
+function WhatsAppIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.2 0-221.5 99.3-221.5 221.5 0 39.1 10.2 77.3 29.6 111L0 480l118.7-31.1c32.6 17.8 69.3 27.2 106.9 27.2h.1c122.3 0 221.6-99.3 221.6-221.5 0-59.3-23.1-115-65.4-157.5zM223.9 438.7c-33.2 0-65.7-8.9-94-25.6l-6.7-4-70.4 18.5 18.8-68.6-4.4-7c-18.5-29.4-28.2-63.4-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.9 34.9 54.1 81.2 54 130.5 0 101.8-82.9 184.8-184.5 184.8zm101.3-138.5c-5.5-2.8-32.8-16.1-37.9-17.9-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 17.9-17.6 21.6-3.3 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.3-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.3 4.6-12.9 4.6-24 3.2-26.3-1.3-2.4-5-3.8-10.5-6.6z" />
+    </svg>
+  );
+}
 
 export function Footer() {
   const [activeLegalKey, setActiveLegalKey] = useState<LegalDocumentKey | null>(null);
@@ -45,22 +53,28 @@ export function Footer() {
               </p>
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/people/VetHogar-Latinoamerica/61576302302949/?ref=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/5 backdrop-blur-sm rounded-xl flex items-center justify-center hover:bg-purple-500/20 transition-all duration-300 border border-white/10"
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/vethogar.lat/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/5 backdrop-blur-sm rounded-xl flex items-center justify-center hover:bg-purple-500/20 transition-all duration-300 border border-white/10"
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
                 <a
-                  href="#"
+                  href="https://wa.me/573222198440"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/5 backdrop-blur-sm rounded-xl flex items-center justify-center hover:bg-purple-500/20 transition-all duration-300 border border-white/10"
                 >
-                  <Twitter className="w-5 h-5" />
+                  <WhatsAppIcon className="w-5 h-5" />
                 </a>
               </div>
             </div>
