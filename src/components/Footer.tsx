@@ -130,14 +130,14 @@ export function Footer() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <Mail className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
-                  <a href="mailto:hola@vethogar.com" className="text-gray-400 hover:text-purple-400 transition-colors duration-300">
-                    hola@vethogar.com
+                  <a href="mailto:vethogarlat@gmail.com" className="text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                    vethogarlat@gmail.com
                   </a>
                 </li>
                 <li className="flex items-start gap-3">
                   <Phone className="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0" />
-                  <a href="tel:+573001234567" className="text-gray-400 hover:text-purple-400 transition-colors duration-300">
-                    +57 300 123 4567
+                  <a href="tel:+573222198440" className="text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                    322 219 8440
                   </a>
                 </li>
                 <li className="flex items-start gap-3">
